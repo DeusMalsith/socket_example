@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My Chat App</title>
+</head>
+<body>
+	<h2>CHAAAAAAAAAAT</h2>
+
+	<h3>What would you like to say?</h3>
+	<form id="chat-form">
+		<div>
+			Comment:
+			<textarea id="chat"></textarea>
+		</div>
+		<input type="submit" value="Say it">
+	</form>
+
+	<hr>
+	<h3>Ongoing Conversations</h3>
+	<div id="results"></div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script type="text/javascript">
+		var socket = io();
+
+		$(document).ready(function() {
+			$('#chat-form').submit(function(e) {
+				e.preventDefault();
+
+				// Grab the message
+				var message = $('#chat').val();
+
+				// Checks to make sure message isn't blank
+				if(!message) {
+				return;
+			}
+
+				console.log('form was clicked', message);
+
+				// Send message to server
+				socket.emit('chat message', message);
+
+				// Print message to myself
+				// printMessage(message);
+
+				// Clears the chat box after submission
+				$('#chat').val('');
+			});
+		});
+
+		socket.on('chat message', function(msg) {
+			printMessage(msg);
+		});
+
+		function printMessage(msg) {
+			// Creating a new paragraph tag with the message passed in
+			var p = $('<p>').append(msg);
+
+			// Adding the new paragraph tag to the results div
+			$('#results').append(p);
+		}
+	</script>
+</body>
+</html>
